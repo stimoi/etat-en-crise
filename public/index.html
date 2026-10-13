@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'État en crise</title>
+  <!-- Polices Google : Fraunces (titres façon journal) et DM Sans (texte).
+       Sans connexion, le CSS retombe sur des polices du système. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <!-- Le navigateur commence à télécharger les modules du jeu tout de suite,
+       en même temps que la page (au lieu de les découvrir un par un). -->
+  <link rel="modulepreload" href="regles.js">
+  <link rel="modulepreload" href="donnees-budget.js">
+  <link rel="modulepreload" href="affichage.js">
+</head>
+<body>
+  <!--
+    Pour refaire le design : change librement les balises, l'ordre et les classes,
+    mais garde les "id", les classes "jauge-…" / "bouton-choix" et les attributs
+    "data-…" : affichage.js s'en sert pour trouver les éléments à remplir.
+  -->
+
+  <div class="page">
+    <header class="une">
+      <div class="tricolore" aria-hidden="true"></div>
+      <p class="une-surtitre">Édition spéciale · Le quotidien de la République imaginaire</p>
+      <h1 class="une-titre">L'État en crise</h1>
+      <div class="une-infos">
+        <span class="pastille">📅 <strong id="date-jeu"></strong></span>
+        <span class="pastille">Tour n° <strong id="tour">1</strong></span>
+        <span class="pastille pastille-crise">Niveau de crise <strong id="niveau-crise">×1</strong></span>
+        <!-- La partie est sauvegardée dans le navigateur : ce bouton en recommence une -->
+        <button id="bouton-nouvelle-partie" class="pastille pastille-bouton" type="button">↺ Nouvelle partie</button>
+      </div>
+      <nav class="navigation" aria-label="Pages du site">
+        <a href="index.html" aria-current="page">🎮 Jouer</a>
+        <a href="resultats.html">🏆 Le mur des mandats</a>
+        <a href="discussion.html">💬 Discussion</a>
+      </nav>
+    </header>
+
+    <div class="mise-en-page">
+      <aside class="colonne-tableau">
+        <section id="jauges" class="carte" aria-label="État de la Nation">
+          <h2 class="rubrique">État de la Nation</h2>
+
+          <div class="jauge" data-jauge="dette">
+            <span class="jauge-icone" aria-hidden="true">💶</span>
+            <span class="jauge-nom">Dette publique</span>
+            <span class="jauge-valeur"></span>
+            <span class="jauge-variation"></span>
+            <div class="jauge-barre"><div class="jauge-remplissage"></div></div>
+          </div>
+          <div class="jauge" data-jauge="popularite">
+            <span class="jauge-icone" aria-hidden="true">❤️</span>
+            <span class="jauge-nom">Popularité</span>
+            <span class="jauge-valeur"></span>
+            <span class="jauge-variation"></span>
+            <div class="jauge-barre"><div class="jauge-remplissage"></div></div>
+          </div>
+          <div class="jauge" data-jauge="economie">
+            <span class="jauge-icone" aria-hidden="true">📈</span>
+            <span class="jauge-nom">Économie</span>
+            <span class="jauge-valeur"></span>
+            <span class="jauge-variation"></span>
+            <div class="jauge-barre"><div class="jauge-remplissage"></div></div>
+          </div>
+          <div class="jauge" data-jauge="education">
+            <span class="jauge-icone" aria-hidden="true">🎓</span>
+            <span class="jauge-nom">Éducation / jeunesse</span>
+            <span class="jauge-valeur"></span>
+            <span class="jauge-variation"></span>
+            <div class="jauge-barre"><div class="jauge-remplissage"></div></div>
+          </div>
+          <div class="jauge" data-jauge="ordre">
+            <span class="jauge-icone" aria-hidden="true">🛡️</span>
+            <span class="jauge-nom">Ordre public</span>
+            <span class="jauge-valeur"></span>
+            <span class="jauge-variation"></span>
+            <div class="jauge-barre"><div class="jauge-remplissage"></div></div>
+          </div>
+
+          <p class="jauges-legende">Partie perdue si la popularité, l'économie ou l'ordre public tombe à 0, ou si la dette atteint le seuil de faillite. 3 tours = 1 mois.</p>
+        </section>
+
+        <!-- Rappel de la décision précédente et de ses effets (visible pendant le chargement du tour suivant) -->
+        <section id="derniere-decision" class="carte" hidden>
+          <h2 class="rubrique">Votre dernière décision</h2>
+          <p id="decision-texte"></p>
+          <p id="decision-reaction" hidden></p>
+          <ul id="decision-effets"></ul>
+          <p id="decision-budget" hidden></p>
+          <p id="decision-fins" hidden></p>
+        </section>
+      </aside>
+
+      <main id="zone-evenement">
+        <div id="chargement" class="carte chargement" hidden>
+          <div class="points" aria-hidden="true"><span></span><span></span><span></span></div>
+          <p class="chargement-titre">Le gouvernement se réunit en urgence…</p>
+          <p class="chargement-sous-titre">La dépêche du jour est en cours de rédaction.</p>
+          <div class="squelette" aria-hidden="true"><span></span><span></span><span></span></div>
+        </div>
+
+        <article id="evenement" class="carte evenement" hidden>
+          <div class="evenement-entete">
+            <span class="etiquette">Dépêche</span>
+            <p id="evenement-suite" class="etiquette etiquette-suite" hidden></p>
+          </div>
+          <p id="evenement-personnage" hidden></p>
+          <h2 id="evenement-titre"></h2>
+          <p id="evenement-description"></p>
+
+          <div id="choix">
+            <button class="bouton-choix" data-index="0"></button>
+            <button class="bouton-choix" data-index="1"></button>
+            <button class="bouton-choix" data-index="2"></button>
+          </div>
+
+          <form id="form-choix-libre">
+            <label for="choix-libre">✍️ Ou proposez votre propre décision</label>
+            <input id="choix-libre" type="text" maxlength="150" autocomplete="off"
+                   placeholder="Ex. : distribuer des glaces à tous les lycéens">
+            <button id="bouton-choix-libre" type="submit">Proposer</button>
+            <p id="choix-libre-message" hidden></p>
+          </form>
+
+          <p id="evenement-source"></p>
+        </article>
+
+        <div id="erreur" class="carte alerte" hidden>
+          <p id="erreur-message"></p>
+          <button id="bouton-reessayer" class="bouton-principal">Réessayer</button>
+        </div>
+
+        <!-- Les finances publiques (État + Sécurité sociale + collectivités), avec les vrais chiffres -->
+        <section id="budget" class="carte budget" aria-label="Finances publiques">
+          <h2 class="rubrique">Finances publiques · ce mois-ci</h2>
+
+          <div class="budget-chiffres">
+            <div class="budget-chiffre">
+              <span class="budget-etiquette">Recettes</span>
+              <strong id="budget-recettes"></strong>
+            </div>
+            <div class="budget-chiffre">
+              <span class="budget-etiquette">Dépenses</span>
+              <strong id="budget-depenses"></strong>
+            </div>
+            <div class="budget-chiffre budget-chiffre-deficit">
+              <span class="budget-etiquette">Déficit → dette</span>
+              <strong id="budget-deficit"></strong>
+            </div>
+            <div class="budget-chiffre">
+              <span class="budget-etiquette">Dette / PIB</span>
+              <strong id="budget-ratio"></strong>
+            </div>
+          </div>
+
+          <div class="budget-colonnes">
+            <div>
+              <h3 class="sous-rubrique">Où va l'argent ? <small>par an</small></h3>
+              <ul id="budget-postes"></ul>
+            </div>
+            <div>
+              <h3 class="sous-rubrique">D'où vient l'argent ? <small>par an</small></h3>
+              <ul id="budget-lignes-recettes"></ul>
+
+              <h3 class="sous-rubrique sous-rubrique-espacee">Vos mesures en cours <small id="budget-mesures-total"></small></h3>
+              <ul id="budget-mesures"></ul>
+              <p id="budget-mesures-vide">Aucune mesure en cours.</p>
+            </div>
+          </div>
+
+          <p class="budget-sources">
+            Chiffres réels de toutes les administrations publiques (État, Sécurité sociale, collectivités) :
+            dette fin juin 2026 (<a id="lien-insee" target="_blank" rel="noopener">Insee</a>),
+            dépenses par fonction (<a id="lien-fonctions" target="_blank" rel="noopener">Insee</a>).
+            Les recettes suivent l'économie ; les intérêts suivent la dette.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <footer class="pied">Jeu humoristique : tous les personnages et événements sont fictifs. Les chiffres du budget sont réels, la suite l'est moins.</footer>
+  </div>
+
+  <!-- Écran de fin : une fenêtre par-dessus le jeu -->
+  <section id="ecran-fin" hidden role="dialog" aria-modal="true" aria-labelledby="fin-titre">
+    <div class="fin-carte">
+      <p class="tampon">Mandat terminé</p>
+      <h2 id="fin-titre">Fin de partie</h2>
+      <p id="fin-tours"></p>
+      <p id="fin-message"></p>
+
+      <div id="fin-bilan">
+        <h3 class="rubrique">Le verdict de l'Histoire</h3>
+        <p id="fin-bilan-chargement" hidden>📜 Les historiens rédigent le verdict de votre mandat…</p>
+        <h4 id="fin-bilan-titre"></h4>
+        <p id="fin-bilan-resume"></p>
+      </div>
+
+      <div class="fin-actions">
+        <button id="bouton-rejouer" class="bouton-principal">Rejouer</button>
+        <!-- Activé quand le verdict de l'Histoire est prêt -->
+        <button id="bouton-publier" class="bouton-secondaire" disabled>📣 Publier sur le mur des mandats</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- type="module" : permet à game.js d'importer regles.js et affichage.js -->
+  <script type="module" src="game.js"></script>
+</body>
+</html>

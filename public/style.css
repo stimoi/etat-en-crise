@@ -1,0 +1,1847 @@
+/* =====================================================================
+   style.css — L'apparence du jeu. Thème : la « une » d'un journal satirique.
+   Tout est réglable dans les variables ci-dessous (couleurs, polices,
+   arrondis). La logique du jeu ne dépend pas de ce fichier.
+   ===================================================================== */
+
+/* ----- Couleurs et réglages (thème clair) ----- */
+:root {
+  color-scheme: light;
+  --papier: #f4efe4;
+  --papier-trame: rgba(31, 29, 26, 0.045);
+  --carte: #fffdf8;
+  --encre: #1f1d1a;
+  --encre-douce: #6a645a;
+  --trait: #e4dccb;
+  --bleu: #2346c4;
+  --bleu-doux: #e5eafb;
+  --rouge: #c8342b;
+  --rouge-doux: #fbe6e3;
+  --vert: #1d7a46;
+  --vert-doux: #e1f2e8;
+  --ambre: #a8691a;
+  --ambre-doux: #fbf0dc;
+  --ambre-barre: #dc9a2a; /* plus vif que --ambre, qui sert aussi pour du texte */
+  --sur-accent: #ffffff; /* texte posé sur une couleur vive */
+  --ombre: 0 1px 2px rgba(31, 29, 26, 0.06), 0 8px 24px rgba(31, 29, 26, 0.07);
+  --ombre-forte: 0 2px 6px rgba(31, 29, 26, 0.1), 0 24px 60px rgba(31, 29, 26, 0.25);
+  --rayon: 16px;
+  --police-titre: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --police-texte: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* ----- Thème sombre : suit automatiquement le réglage du système ----- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --papier: #14161b;
+    --papier-trame: rgba(255, 255, 255, 0.03);
+    --carte: #1d2027;
+    --encre: #eee9df;
+    --encre-douce: #a7a196;
+    --trait: #30343e;
+    --bleu: #8aa2ff;
+    --bleu-doux: #252d4a;
+    --rouge: #ff7a6e;
+    --rouge-doux: #3d2326;
+    --vert: #5ccf93;
+    --vert-doux: #1b3328;
+    --ambre: #f0b452;
+    --ambre-doux: #3a2f1c;
+    --ambre-barre: #f0b452;
+    --sur-accent: #14161b;
+    --ombre: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    --ombre-forte: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 60px rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* Indispensable : sans cette règle, un élément avec "display: flex" (ou autre)
+   resterait visible même avec l'attribut hidden, et le jeu semblerait buggé. */
+[hidden] {
+  display: none !important;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--papier);
+}
+
+body {
+  margin: 0;
+  font-family: var(--police-texte);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--encre);
+  /* Fond « papier » : une fine trame de points. */
+  background-color: var(--papier);
+  background-image: radial-gradient(var(--papier-trame) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--bleu);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 16px 40px;
+}
+
+/* ----- La « une » du journal ----- */
+
+.une {
+  text-align: center;
+  padding-bottom: 22px;
+  margin-bottom: 28px;
+  border-bottom: 3px double var(--encre);
+}
+
+.tricolore {
+  width: 78px;
+  height: 6px;
+  margin: 0 auto 14px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #2346c4 0 33.3%, #f4f1ea 33.3% 66.6%, #d6453d 66.6%);
+  box-shadow: 0 0 0 1px var(--trait);
+}
+
+.une-surtitre {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--encre-douce);
+}
+
+.une-titre {
+  margin: 6px 0 16px;
+  font-family: var(--police-titre);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 8vw, 4.8rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.une-infos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pastille {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--trait);
+  border-radius: 999px;
+  background: var(--carte);
+  font-size: 0.9rem;
+  color: var(--encre-douce);
+}
+
+.pastille strong {
+  color: var(--encre);
+  font-variant-numeric: tabular-nums;
+}
+
+.pastille-bouton {
+  cursor: pointer;
+  font-weight: 600;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.pastille-bouton:hover {
+  border-color: var(--encre-douce);
+  color: var(--encre);
+}
+
+.pastille-crise strong {
+  color: var(--rouge);
+}
+
+/* ----- Mise en page : tableau de bord à gauche, événement à droite ----- */
+
+.mise-en-page {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.colonne-tableau {
+  position: sticky;
+  top: 16px;
+  display: grid;
+  gap: 20px;
+}
+
+@media (max-width: 880px) {
+  .mise-en-page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .colonne-tableau {
+    position: static;
+  }
+}
+
+/* Écran peu haut : la colonne de gauche risquerait d'être coupée si elle restait collée. */
+@media (max-height: 860px) {
+  .colonne-tableau {
+    position: static;
+  }
+}
+
+#zone-evenement {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+
+.carte {
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  padding: 20px;
+}
+
+/* Petit titre de rubrique avec un filet qui file jusqu'au bord. */
+.rubrique {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-family: var(--police-texte);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--encre-douce);
+}
+
+.rubrique::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--trait);
+}
+
+/* ----- Jauges ----- */
+
+/* Ligne 1 : icône, nom. Ligne 2 : barre, valeur.
+   La variation (« +8 ») flotte en haut à droite, par-dessus. */
+.jauge {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'icone nom nom'
+    'icone barre valeur';
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 5px;
+  padding: 11px 0;
+  border-bottom: 1px dashed var(--trait);
+}
+
+.jauge:last-of-type {
+  border-bottom: 0;
+}
+
+.jauge-icone {
+  grid-area: icone;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--papier);
+  font-size: 1.05rem;
+  transition: background-color 0.4s;
+}
+
+.jauge-nom {
+  grid-area: nom;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.jauge-valeur {
+  grid-area: valeur;
+  /* Largeur fixe : toutes les barres ont la même longueur. */
+  min-width: 6.6rem;
+  text-align: right;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--encre-douce);
+}
+
+/* Barre maison (au lieu de <progress>) pour pouvoir animer son remplissage. */
+.jauge-barre {
+  grid-area: barre;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--papier);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.jauge-remplissage {
+  height: 100%;
+  width: 50%;
+  border-radius: inherit;
+  background: var(--bleu);
+  /* La largeur change en JS : cette ligne la fait glisser au lieu de sauter. */
+  transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.6s;
+}
+
+/* La dette se remplit vers la faillite : couleur « alerte » ambrée. */
+.jauge[data-jauge='dette'] .jauge-remplissage {
+  background: var(--ambre-barre);
+}
+
+/* Classe ajoutée par affichage.js quand une jauge est proche de la défaite. */
+.jauge.danger .jauge-remplissage {
+  background: var(--rouge);
+  animation: alerte 1.4s ease-in-out infinite;
+}
+
+.jauge.danger .jauge-valeur {
+  color: var(--rouge);
+  font-weight: 700;
+}
+
+.jauge.danger .jauge-icone {
+  background: var(--rouge-doux);
+}
+
+@keyframes alerte {
+  50% { opacity: 0.5; }
+}
+
+/* Le « +8 » / « −5 » qui apparaît à côté d'une jauge puis s'efface. */
+.jauge-variation {
+  position: absolute;
+  top: 9px;
+  right: 0;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+}
+
+.jauge-variation.effet-bon {
+  background: var(--vert-doux);
+}
+
+.jauge-variation.effet-mauvais {
+  background: var(--rouge-doux);
+}
+
+.jauge-variation.animer {
+  animation: variation 2.8s ease-out;
+}
+
+@keyframes variation {
+  0% { opacity: 0; transform: translateY(8px) scale(0.8); }
+  12% { opacity: 1; transform: translateY(0) scale(1.12); }
+  22% { transform: scale(1); }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.jauges-legende {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--encre-douce);
+}
+
+/* Vert = bon pour le pays, rouge = mauvais (une dette qui monte est en rouge). */
+.effet-bon {
+  color: var(--vert);
+}
+
+.effet-mauvais {
+  color: var(--rouge);
+}
+
+/* ----- Dernière décision ----- */
+
+#derniere-decision {
+  animation: apparition 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+#decision-texte {
+  margin: 0 0 10px;
+  font-family: var(--police-titre);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+#decision-reaction {
+  margin: 0 0 12px;
+  padding-left: 12px;
+  border-left: 3px solid var(--ambre);
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--encre-douce);
+}
+
+#decision-effets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#decision-effets li {
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+#decision-effets li.effet-bon {
+  background: var(--vert-doux);
+}
+
+#decision-effets li.effet-mauvais {
+  background: var(--rouge-doux);
+}
+
+#decision-budget,
+#decision-fins {
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--papier);
+  font-size: 0.85rem;
+}
+
+/* ----- Budget de l'État ----- */
+
+.budget-chiffres {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.budget-chiffre {
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--papier);
+}
+
+.budget-etiquette {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--encre-douce);
+}
+
+.budget-chiffre strong {
+  font-family: var(--police-titre);
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.budget-chiffre-deficit {
+  background: var(--rouge-doux);
+}
+
+.budget-chiffre-deficit strong {
+  color: var(--rouge);
+}
+
+.budget-colonnes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 640px) {
+  .budget-chiffres {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .budget-colonnes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.sous-rubrique {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.sous-rubrique-espacee {
+  margin-top: 22px;
+}
+
+/* Ligne modifiée par le joueur (« Santé 130,5 Md€ (−50 %) ») : mise en évidence. */
+.poste-modifie .poste-montant {
+  color: var(--encre);
+  font-weight: 700;
+}
+
+.poste-modifie .poste-barre span {
+  background: var(--rouge);
+  opacity: 1;
+}
+
+.sous-rubrique small {
+  font-weight: 500;
+  color: var(--encre-douce);
+}
+
+#budget-postes,
+#budget-lignes-recettes,
+#budget-mesures {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.poste {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  font-size: 0.84rem;
+}
+
+.poste-montant {
+  font-variant-numeric: tabular-nums;
+  color: var(--encre-douce);
+}
+
+.poste-barre {
+  grid-column: 1 / -1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--papier);
+  overflow: hidden;
+}
+
+.poste-barre span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--bleu);
+  opacity: 0.75;
+  transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* La charge de la dette est mise en avant : c'est elle qui grossit si la dette grossit. */
+.poste-dette .poste-barre span {
+  background: var(--ambre-barre);
+  opacity: 1;
+}
+
+.poste-dette .poste-nom {
+  font-weight: 700;
+}
+
+.mesure {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--papier);
+  font-size: 0.84rem;
+}
+
+.mesure-nom {
+  color: var(--encre);
+  font-weight: 600;
+}
+
+.mesure-detail {
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+#budget-mesures-vide {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--encre-douce);
+}
+
+.budget-sources {
+  margin: 18px 0 0;
+  font-size: 0.75rem;
+  color: var(--encre-douce);
+}
+
+.budget-sources a {
+  color: var(--bleu);
+}
+
+/* ----- Chargement ----- */
+
+.chargement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 360px;
+  padding: 36px 28px;
+  text-align: center;
+}
+
+.points {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.points span {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--bleu);
+  animation: rebond 1.1s ease-in-out infinite;
+}
+
+.points span:nth-child(2) {
+  background: var(--encre-douce);
+  animation-delay: 0.15s;
+}
+
+.points span:nth-child(3) {
+  background: var(--rouge);
+  animation-delay: 0.3s;
+}
+
+@keyframes rebond {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.45; }
+  40% { transform: translateY(-12px); opacity: 1; }
+}
+
+.chargement-titre {
+  margin: 0;
+  font-family: var(--police-titre);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.chargement-sous-titre {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--encre-douce);
+}
+
+/* Lignes grises qui scintillent, comme un article pas encore imprimé. */
+.squelette {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 24px;
+}
+
+.squelette span {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--papier) 25%, var(--trait) 50%, var(--papier) 75%);
+  background-size: 200% 100%;
+  animation: brillance 1.4s linear infinite;
+}
+
+.squelette span:nth-child(2) { width: 85%; }
+.squelette span:nth-child(3) { width: 60%; }
+
+@keyframes brillance {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* ----- Événement ----- */
+
+.evenement {
+  position: relative;
+  overflow: hidden;
+  padding: 30px 28px 22px;
+  animation: apparition 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Liseré tricolore en haut de la dépêche. */
+.evenement::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: linear-gradient(90deg, #2346c4 0 33.3%, var(--trait) 33.3% 66.6%, #d6453d 66.6%);
+}
+
+.evenement-entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.etiquette {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--bleu-doux);
+  color: var(--bleu);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.etiquette-suite {
+  background: var(--ambre-doux);
+  color: var(--ambre);
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+/* Personnage : avatar rond + nom + rôle (construits par affichage.js). */
+#evenement-personnage {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.personnage-emoji {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border: 2px solid var(--trait);
+  border-radius: 50%;
+  background: var(--papier);
+  font-size: 1.4rem;
+}
+
+.personnage-nom {
+  display: block;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.personnage-role {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--encre-douce);
+}
+
+#evenement-titre {
+  margin: 0 0 14px;
+  font-family: var(--police-titre);
+  font-weight: 800;
+  font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+#evenement-description {
+  margin: 0 0 26px;
+  font-size: 1.08rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+/* Lettrine rouge, comme dans les vieux journaux. */
+#evenement-description::first-letter {
+  float: left;
+  margin: 4px 8px 0 0;
+  font-family: var(--police-titre);
+  font-size: 3.3em;
+  font-weight: 800;
+  line-height: 0.8;
+  color: var(--rouge);
+}
+
+/* Les 3 choix : des cartes avec une lettre A / B / C générée en CSS. */
+#choix {
+  display: grid;
+  gap: 10px;
+  counter-reset: choix;
+}
+
+.bouton-choix {
+  counter-increment: choix;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--trait);
+  border-radius: 12px;
+  background: var(--carte);
+  color: var(--encre);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  animation: apparition 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.bouton-choix:nth-child(2) { animation-delay: 0.07s; }
+.bouton-choix:nth-child(3) { animation-delay: 0.14s; }
+
+.bouton-choix::before {
+  content: counter(choix, upper-alpha);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--papier);
+  color: var(--bleu);
+  font-family: var(--police-titre);
+  font-weight: 800;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.bouton-choix:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--bleu);
+  box-shadow: var(--ombre);
+}
+
+.bouton-choix:hover:not(:disabled)::before {
+  background: var(--bleu);
+  color: var(--sur-accent);
+}
+
+.bouton-choix:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.bouton-choix:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Choix libre */
+#form-choix-libre {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--trait);
+}
+
+#form-choix-libre label {
+  grid-column: 1 / -1;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--encre-douce);
+}
+
+#choix-libre {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1.5px solid var(--trait);
+  border-radius: 12px;
+  background: var(--papier);
+  color: var(--encre);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+#choix-libre::placeholder {
+  color: var(--encre-douce);
+  opacity: 0.8;
+}
+
+#choix-libre:focus {
+  outline: none;
+  border-color: var(--bleu);
+  box-shadow: 0 0 0 4px var(--bleu-doux);
+}
+
+#bouton-choix-libre {
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--encre);
+  color: var(--carte);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.15s;
+}
+
+#bouton-choix-libre:hover:not(:disabled) {
+  background: var(--bleu);
+  color: var(--sur-accent);
+}
+
+#bouton-choix-libre:disabled {
+  opacity: 0.75;
+  cursor: progress;
+}
+
+#choix-libre-message {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--ambre-doux);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 520px) {
+  #form-choix-libre {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .evenement {
+    padding: 26px 18px 18px;
+  }
+}
+
+#evenement-source {
+  margin: 18px 0 0;
+  font-size: 0.78rem;
+  color: var(--encre-douce);
+}
+
+/* ----- Boutons principaux (Réessayer, Rejouer) ----- */
+
+.bouton-principal {
+  padding: 13px 26px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--bleu);
+  color: var(--sur-accent);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--ombre);
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.bouton-principal:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+/* ----- Erreur ----- */
+
+.alerte {
+  border-color: var(--rouge);
+  background: var(--rouge-doux);
+  text-align: center;
+}
+
+.alerte p {
+  margin: 0 0 14px;
+  font-weight: 600;
+}
+
+/* ----- Écran de fin : fenêtre par-dessus le jeu ----- */
+
+#ecran-fin {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  overflow-y: auto;
+  background: rgba(12, 11, 10, 0.6);
+  backdrop-filter: blur(5px);
+  animation: fondu 0.3s both;
+}
+
+.fin-carte {
+  width: min(580px, 100%);
+  padding: 34px 30px 30px;
+  border-radius: 20px;
+  background: var(--carte);
+  box-shadow: var(--ombre-forte);
+  text-align: center;
+  animation: apparition 0.5s 0.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Le tampon rouge qui « s'écrase » sur la page. */
+.tampon {
+  display: inline-block;
+  margin: 0 0 16px;
+  padding: 6px 16px;
+  border: 3px solid var(--rouge);
+  border-radius: 8px;
+  color: var(--rouge);
+  font-family: var(--police-titre);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-6deg);
+  animation: tampon 0.5s 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+@keyframes tampon {
+  from { opacity: 0; transform: rotate(-6deg) scale(2.4); }
+  to { opacity: 1; transform: rotate(-6deg) scale(1); }
+}
+
+#fin-titre {
+  margin: 0 0 8px;
+  font-family: var(--police-titre);
+  font-size: clamp(2rem, 6vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+#fin-tours {
+  margin: 0 0 8px;
+  font-weight: 600;
+  color: var(--encre-douce);
+}
+
+#fin-message {
+  margin: 0;
+  font-size: 1.05rem;
+  text-wrap: balance;
+}
+
+#fin-bilan {
+  margin: 24px 0;
+  padding: 18px 20px;
+  border-left: 4px solid var(--ambre);
+  border-radius: 12px;
+  background: var(--papier);
+  text-align: left;
+}
+
+#fin-bilan-chargement {
+  margin: 0;
+  font-style: italic;
+  color: var(--encre-douce);
+}
+
+#fin-bilan-titre {
+  margin: 0 0 8px;
+  font-family: var(--police-titre);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+#fin-bilan-titre:empty {
+  display: none;
+}
+
+#fin-bilan-resume {
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ----- Pied de page ----- */
+
+.pied {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--trait);
+  font-size: 0.8rem;
+  text-align: center;
+  color: var(--encre-douce);
+}
+
+/* =====================================================================
+   NAVIGATION ENTRE LES PAGES (jeu, mur des mandats, discussion)
+   ===================================================================== */
+
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.navigation a {
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: var(--encre-douce);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.navigation a:hover {
+  background: var(--carte);
+  color: var(--encre);
+}
+
+.navigation a[aria-current='page'] {
+  background: var(--encre);
+  color: var(--carte);
+}
+
+/* En-tête plus petit pour les pages secondaires. */
+.une-compacte .une-titre {
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+}
+
+/* Boutons communs */
+.bouton-secondaire {
+  padding: 9px 16px;
+  border: 1.5px solid var(--trait);
+  border-radius: 999px;
+  background: var(--carte);
+  color: var(--encre);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bouton-secondaire:hover {
+  border-color: var(--encre-douce);
+}
+
+/* Le bouton officiel « Se connecter avec Discord » (couleur de Discord). */
+.bouton-discord {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #5865f2;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--ombre);
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.bouton-discord:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.message-erreur {
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--rouge-doux);
+  color: var(--encre);
+  font-size: 0.9rem;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--papier);
+  object-fit: cover;
+}
+
+.avatar-petit {
+  width: 30px;
+  height: 30px;
+}
+
+/* =====================================================================
+   PAGE « LE MUR DES MANDATS »
+   ===================================================================== */
+
+.barre-compte {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.barre-texte {
+  margin: 0;
+  color: var(--encre-douce);
+}
+
+.compte {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.compte-nom {
+  font-weight: 700;
+}
+
+.compte {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.compte-note {
+  flex-basis: 100%;
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--encre-douce);
+}
+
+.mur-message {
+  border-color: var(--ambre);
+  background: var(--ambre-doux);
+  font-weight: 600;
+}
+
+.a-publier {
+  margin-bottom: 24px;
+  border: 2px dashed var(--bleu);
+  animation: apparition 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.form-publier {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.form-publier label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.form-publier textarea,
+.form-commentaire input,
+.form-discussion textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--trait);
+  border-radius: 12px;
+  background: var(--papier);
+  color: var(--encre);
+  resize: vertical;
+}
+
+.form-publier textarea:focus,
+.form-commentaire input:focus,
+.form-discussion textarea:focus {
+  outline: none;
+  border-color: var(--bleu);
+  box-shadow: 0 0 0 4px var(--bleu-doux);
+}
+
+.actions-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mur-outils {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.onglets {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--trait);
+  border-radius: 999px;
+  background: var(--carte);
+}
+
+.onglet {
+  padding: 7px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--encre-douce);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.onglet[aria-pressed='true'] {
+  background: var(--encre);
+  color: var(--carte);
+}
+
+.mur {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.mur-vide {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--encre-douce);
+}
+
+.publication {
+  display: grid;
+  gap: 12px;
+  animation: apparition 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.publication-entete {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.publication-auteur {
+  display: block;
+  font-weight: 700;
+}
+
+.publication-date {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--encre-douce);
+}
+
+.publication-titre {
+  margin: 0;
+  font-family: var(--police-titre);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.publication-resume {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.publication-stats,
+.publication-reformes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.publication-stats li,
+.publication-reformes li {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--papier);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.publication-reformes li {
+  background: var(--ambre-doux);
+}
+
+.publication-reformes:empty {
+  display: none;
+}
+
+.publication-mot {
+  margin: 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--bleu);
+  font-style: italic;
+  color: var(--encre-douce);
+}
+
+.publication-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--trait);
+}
+
+.bouton-vote,
+.bouton-commentaires {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1.5px solid var(--trait);
+  border-radius: 999px;
+  background: var(--carte);
+  color: var(--encre);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: transform 0.12s, background-color 0.15s, border-color 0.15s;
+}
+
+.bouton-vote:active {
+  transform: scale(0.92);
+}
+
+.bouton-vote[data-vote='1'][aria-pressed='true'] {
+  border-color: var(--vert);
+  background: var(--vert-doux);
+}
+
+.bouton-vote[data-vote='-1'][aria-pressed='true'] {
+  border-color: var(--rouge);
+  background: var(--rouge-doux);
+}
+
+.bouton-commentaires {
+  margin-left: auto;
+}
+
+.commentaires {
+  display: grid;
+  gap: 10px;
+}
+
+.commentaires-chargement,
+.commentaires-connexion {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--encre-douce);
+}
+
+.commentaires-liste {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.commentaire {
+  display: flex;
+  gap: 10px;
+}
+
+.commentaire-contenu {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--papier);
+}
+
+.commentaire-auteur {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.commentaire-date {
+  margin-left: 8px;
+  font-size: 0.75rem;
+  color: var(--encre-douce);
+}
+
+.commentaire-texte {
+  margin: 2px 0 0;
+  font-size: 0.92rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.form-commentaire {
+  display: flex;
+  gap: 8px;
+}
+
+.form-commentaire .bouton-principal {
+  padding: 10px 18px;
+}
+
+/* =====================================================================
+   PAGE « DISCUSSION »
+   ===================================================================== */
+
+.discussion {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 880px) {
+  .discussion {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.liste-themes {
+  display: grid;
+  gap: 6px;
+}
+
+.theme {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-areas:
+    'emoji titre'
+    'emoji description';
+  column-gap: 10px;
+  align-items: center;
+  padding: 9px 10px;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--encre);
+  text-align: left;
+  cursor: pointer;
+}
+
+.theme:hover {
+  background: var(--papier);
+}
+
+.theme[aria-pressed='true'] {
+  border-color: var(--bleu);
+  background: var(--bleu-doux);
+}
+
+.theme-emoji {
+  grid-area: emoji;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.theme-titre {
+  grid-area: titre;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.theme-description {
+  grid-area: description;
+  font-size: 0.78rem;
+  color: var(--encre-douce);
+}
+
+.conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 560px;
+}
+
+.conversation-entete {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--trait);
+}
+
+.conversation-infos {
+  flex: 1;
+  min-width: 0;
+}
+
+.conversation-infos h2 {
+  margin: 0;
+  font-family: var(--police-titre);
+  font-size: 1.3rem;
+}
+
+.conversation-infos p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--encre-douce);
+}
+
+.fil {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 60vh;
+  min-height: 300px;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.fil-astuce {
+  margin: auto;
+  color: var(--encre-douce);
+  font-style: italic;
+}
+
+.bulle {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 85%;
+  animation: apparition 0.25s ease-out both;
+}
+
+.bulle-ia {
+  align-self: flex-start;
+}
+
+.bulle-joueur {
+  align-self: flex-end;
+}
+
+.bulle-emoji {
+  flex-shrink: 0;
+  font-size: 1.3rem;
+}
+
+.bulle-texte {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 16px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bulle-ia .bulle-texte {
+  border-bottom-left-radius: 4px;
+  background: var(--papier);
+}
+
+.bulle-joueur .bulle-texte {
+  border-bottom-right-radius: 4px;
+  background: var(--bleu);
+  color: var(--sur-accent);
+}
+
+/* Trois petits points pendant que l'IA réfléchit. */
+.en-train-d-ecrire::after {
+  content: '•••';
+  letter-spacing: 3px;
+  animation: alerte 1s ease-in-out infinite;
+}
+
+.form-discussion {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.form-discussion .bouton-principal:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Colonne de gauche : budget utilisé + thèmes */
+.colonne-discussion {
+  display: grid;
+  gap: 20px;
+}
+
+.onglets-plein {
+  display: flex;
+  width: 100%;
+}
+
+.onglets-plein .onglet {
+  flex: 1;
+}
+
+.mode-explication {
+  margin: 10px 0;
+  font-size: 0.82rem;
+  color: var(--encre-douce);
+}
+
+.mini-finances {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mini-finances div {
+  display: grid;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--papier);
+}
+
+.mini-finances span {
+  font-size: 0.72rem;
+  color: var(--encre-douce);
+}
+
+.mini-finances strong {
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.mini-jauges {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.mini-jauge {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--papier);
+  font-size: 0.8rem;
+}
+
+.mini-jauge.danger {
+  background: var(--rouge-doux);
+  color: var(--rouge);
+}
+
+.budget-discussion .bouton-secondaire {
+  display: inline-block;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.themes-legende {
+  margin: 10px 0 0;
+  font-size: 0.75rem;
+  color: var(--encre-douce);
+}
+
+/* Carte « Décision appliquée », glissée dans la conversation */
+.carte-decision {
+  display: grid;
+  gap: 6px;
+  align-self: stretch;
+  padding: 12px 14px;
+  border: 1.5px solid var(--vert);
+  border-radius: 14px;
+  background: var(--vert-doux);
+  font-size: 0.88rem;
+  animation: apparition 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.carte-decision.annulee {
+  border-color: var(--trait);
+  background: var(--papier);
+  opacity: 0.7;
+}
+
+.carte-decision-entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.carte-decision-texte {
+  margin: 0;
+  font-family: var(--police-titre);
+  font-weight: 600;
+}
+
+.carte-decision-budget,
+.carte-decision-alerte {
+  margin: 0;
+}
+
+.carte-decision-alerte {
+  font-weight: 700;
+  color: var(--rouge);
+}
+
+.carte-decision-effets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.carte-decision-effets li {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--carte);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.bouton-annuler {
+  padding: 4px 12px;
+  border: 1.5px solid var(--trait);
+  border-radius: 999px;
+  background: var(--carte);
+  color: var(--encre);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bouton-annuler:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+/* Bouton « Publier » de l'écran de fin du jeu */
+.fin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* ----- Animations communes ----- */
+
+@keyframes apparition {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fondu {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Respecte le réglage « réduire les animations » du système. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .jauge-variation.animer {
+    animation: none;
+    opacity: 1;
+  }
+}

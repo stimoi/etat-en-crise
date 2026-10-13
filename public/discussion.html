@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discussion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="une une-compacte">
+      <div class="tricolore" aria-hidden="true"></div>
+      <p class="une-surtitre">Le salon de la République imaginaire</p>
+      <h1 class="une-titre">Discussion</h1>
+      <nav class="navigation" aria-label="Pages du site">
+        <a href="index.html">🎮 Jouer</a>
+        <a href="resultats.html">🏆 Le mur des mandats</a>
+        <a href="discussion.html" aria-current="page">💬 Discussion</a>
+      </nav>
+    </header>
+
+    <div class="discussion">
+      <aside class="colonne-discussion">
+        <!-- Le budget que les discussions spécialisées font bouger -->
+        <section class="carte budget-discussion" aria-label="Budget utilisé">
+          <h2 class="rubrique">Budget utilisé</h2>
+          <div class="onglets onglets-plein">
+            <button class="onglet" data-mode="partie" type="button" aria-pressed="true">🎮 Ma partie</button>
+            <button class="onglet" data-mode="bac" type="button" aria-pressed="false">🧪 Bac à sable</button>
+          </div>
+          <p id="mode-explication" class="mode-explication"></p>
+          <div id="mini-finances" class="mini-finances">
+            <div><span>Déficit / mois</span><strong id="mini-deficit"></strong></div>
+            <div><span>Dette</span><strong id="mini-dette"></strong></div>
+          </div>
+          <ul id="mini-jauges" class="mini-jauges"></ul>
+          <a id="lien-partie" class="bouton-secondaire" href="index.html" hidden>🎮 Lancer une partie</a>
+          <button id="bouton-reinitialiser" class="bouton-secondaire" type="button" hidden>↺ Réinitialiser le bac à sable</button>
+        </section>
+
+        <section class="carte themes" aria-label="Thèmes de discussion">
+          <h2 class="rubrique">Choisis un thème</h2>
+          <div id="liste-themes" class="liste-themes"></div>
+          <p class="themes-legende">💶 = les décisions prises dans ce thème font bouger le budget.</p>
+        </section>
+      </aside>
+
+      <section class="carte conversation" aria-label="Conversation">
+        <header class="conversation-entete">
+          <span id="conversation-emoji" class="personnage-emoji" aria-hidden="true"></span>
+          <div class="conversation-infos">
+            <h2 id="conversation-titre"></h2>
+            <p id="conversation-description"></p>
+          </div>
+          <button id="bouton-nouvelle" class="bouton-secondaire" type="button">Nouvelle conversation</button>
+        </header>
+
+        <ol id="fil" class="fil" aria-live="polite"></ol>
+
+        <form id="form-discussion" class="form-discussion">
+          <textarea id="saisie" rows="2" maxlength="1000" aria-label="Ton message"
+                    placeholder="Écris ton message… (Entrée pour envoyer, Maj+Entrée pour aller à la ligne)"></textarea>
+          <button id="bouton-envoyer" type="submit" class="bouton-principal">Envoyer</button>
+        </form>
+        <p id="discussion-erreur" class="message-erreur" hidden></p>
+      </section>
+    </div>
+
+    <footer class="pied">Conversation avec l'IA du jeu : rien n'est enregistré. Jeu humoristique : tout est fictif.</footer>
+  </div>
+
+  <script type="module" src="discussion.js"></script>
+</body>
+</html>

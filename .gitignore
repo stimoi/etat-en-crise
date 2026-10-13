@@ -1,0 +1,11 @@
+# Dépendances installées par npm : elles se réinstallent avec "npm install"
+node_modules/
+
+# Contient la clé API : ne doit JAMAIS être partagé ni publié
+.env
+
+# Fichiers temporaires de l'outil Cloudflare (wrangler)
+.wrangler/
+
+# Réglages de test locaux du relais (wrangler dev)
+.dev.vars

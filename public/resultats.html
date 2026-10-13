@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le mur des mandats</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="une une-compacte">
+      <div class="tricolore" aria-hidden="true"></div>
+      <p class="une-surtitre">Les archives de la République imaginaire</p>
+      <h1 class="une-titre">Le mur des mandats</h1>
+      <nav class="navigation" aria-label="Pages du site">
+        <a href="index.html">🎮 Jouer</a>
+        <a href="resultats.html" aria-current="page">🏆 Le mur des mandats</a>
+        <a href="discussion.html">💬 Discussion</a>
+      </nav>
+    </header>
+
+    <div class="barre-compte">
+      <p class="barre-texte">Publie ton mandat, puis like, dislike et commente ceux des autres.</p>
+      <div id="compte" class="compte"></div>
+    </div>
+
+    <p id="mur-message" class="carte mur-message" hidden></p>
+
+    <!-- Le résultat de ta dernière partie, prêt à être publié -->
+    <section id="a-publier" class="carte a-publier" hidden>
+      <h2 class="rubrique">Ton dernier mandat</h2>
+      <div id="a-publier-apercu"></div>
+      <form id="form-publier" class="form-publier">
+        <label for="publier-message">Un mot pour la postérité <small>(facultatif)</small></label>
+        <textarea id="publier-message" maxlength="300" rows="2" placeholder="Ex. : Je recommencerais tout. Sauf la taxe sur les croissants."></textarea>
+        <div class="actions-ligne">
+          <button type="submit" id="bouton-publier" class="bouton-principal">📣 Publier sur le mur</button>
+          <button type="button" id="bouton-oublier" class="bouton-secondaire">Ne pas publier</button>
+        </div>
+        <p id="publier-erreur" class="message-erreur" hidden></p>
+      </form>
+    </section>
+
+    <div class="mur-outils">
+      <div class="onglets">
+        <button class="onglet" data-tri="recent" aria-pressed="true">🕒 Récents</button>
+        <button class="onglet" data-tri="top" aria-pressed="false">🔥 Les plus aimés</button>
+      </div>
+    </div>
+
+    <div id="mur" class="mur" aria-live="polite"></div>
+
+    <footer class="pied">Les publications sont enregistrées sur le serveur Discord du jeu. Jeu humoristique : tout est fictif.</footer>
+  </div>
+
+  <!-- Modèle d'une publication : resultats.js le copie et le remplit pour chaque mandat. -->
+  <template id="modele-publication">
+    <article class="carte publication">
+      <header class="publication-entete">
+        <img class="avatar" alt="" width="40" height="40" referrerpolicy="no-referrer">
+        <div>
+          <span class="publication-auteur"></span>
+          <span class="publication-date"></span>
+        </div>
+      </header>
+      <h2 class="publication-titre"></h2>
+      <p class="publication-resume"></p>
+      <ul class="publication-stats"></ul>
+      <ul class="publication-reformes"></ul>
+      <blockquote class="publication-mot" hidden></blockquote>
+      <div class="publication-actions">
+        <button class="bouton-vote" data-vote="1" aria-pressed="false" title="J'aime">👍 <span class="compteur"></span></button>
+        <button class="bouton-vote" data-vote="-1" aria-pressed="false" title="Je n'aime pas">👎 <span class="compteur"></span></button>
+        <button class="bouton-commentaires" aria-expanded="false">💬 <span class="compteur"></span></button>
+      </div>
+      <section class="commentaires" hidden>
+        <p class="commentaires-chargement">Chargement des commentaires…</p>
+        <ul class="commentaires-liste"></ul>
+        <form class="form-commentaire">
+          <input type="text" maxlength="500" placeholder="Ton commentaire…" aria-label="Ton commentaire">
+          <button type="submit" class="bouton-principal">Envoyer</button>
+        </form>
+        <p class="commentaires-connexion" hidden>Connecte-toi avec Discord pour commenter.</p>
+      </section>
+    </article>
+  </template>
+
+  <script type="module" src="resultats.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "etat-en-crise",
+  "version": "1.0.0",
+  "description": "Jeu web : tenir l'État français le plus longtemps possible face à des événements générés par une IA.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "local": "node scripts/lancer-local.js",
+    "craftpick": "node scripts/lancer-craftpick.js",
+    "dev": "node --watch server.js",
+    "test": "node --test \"tests/*.test.js\"",
+    "verifier": "node scripts/verifier.js",
+    "tester-ia": "node scripts/tester-ia.js",
+    "discord": "node scripts/discord.js",
+    "compiler": "node scripts/compiler.js",
+    "pages": "node scripts/pages.js",
+    "en-ligne": "node scripts/en-ligne.js"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}

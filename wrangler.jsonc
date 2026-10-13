@@ -1,0 +1,16 @@
+// Configuration du relais Cloudflare Worker (version GitHub Pages).
+// Les réglages privés (jeton du bot, secrets...) ne sont PAS ici : ils sont
+// envoyés chiffrés à Cloudflare par « npm run en-ligne ».
+{
+  "name": "etat-en-crise-relais",
+  "main": "relais/worker.js",
+  // Date de compatibilité : ports personnalisés (2024-09-02) et process.env (2025-04-01) inclus.
+  "compatibility_date": "2025-09-01",
+  // Pour réutiliser le code Node du site : node:crypto, Buffer, process.env...
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    // Le mur est relu sur Discord au plus toutes les 15 secondes (voir discord/mur.js).
+    "DUREE_CACHE_MUR": "15"
+  },
+  "observability": { "enabled": true }
+}
